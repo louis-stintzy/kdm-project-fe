@@ -32,15 +32,15 @@ export default tseslint.config(
         version: 'detect',
       },
       // pour éviter les erreurs de "import/no-unresolved" (eslint-plugin-import)
-      // 'import/resolver': {
-      //   typescript: {
-      //     alwaysTryTypes: true,
-      //     project: './tsconfig.json',
-      //   },
-      //   // node: {
-      //   //   extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      //   // },
-      // },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+        // node: {
+        //   extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        // },
+      },
     },
     plugins: {
       'react-hooks': reactHooks,

@@ -1,5 +1,5 @@
 import { Group, Rect } from 'react-konva'
-import { CELL_SIZE } from '../constants/board'
+import { CELL_SIZE } from '@/constants/board'
 
 function Domino() {
   return (

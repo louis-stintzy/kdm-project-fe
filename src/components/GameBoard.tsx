@@ -1,5 +1,5 @@
 import { Group, Rect } from 'react-konva'
-import { BOARD_SIZE, CASTLE_POSITIONS, CELL_SIZE } from '../constants/board'
+import { BOARD_SIZE, CASTLE_POSITIONS, CELL_SIZE } from '@/constants/board'
 
 function GameBoard() {
   return (
