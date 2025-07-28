@@ -1,7 +1,7 @@
 import { type Domino } from '@/types/domino.types'
 
 export const DOMINOS: Domino[] = [
-  //  ----- Dominoes A to F -----
+  //  ----- Dominos A to F -----
   {
     id: 1,
     label: 'A',
@@ -57,7 +57,7 @@ export const DOMINOS: Domino[] = [
     ],
   },
 
-  //  ----- Dominoes 1 to 48 -----
+  //  ----- Dominos 1 to 48 -----
   {
     id: 7,
     label: '1',
@@ -491,7 +491,7 @@ export const DOMINOS: Domino[] = [
     ],
   },
 
-  // -- Dominoes 49 to 54 -----
+  // ----- Dominos 49 to 54 -----
   {
     id: 55,
     label: '49',
