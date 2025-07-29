@@ -21,7 +21,7 @@ export interface DominoActions {
   discardDomino: (turn: number, playersNumber: number) => void
   removeFromCurrent: (domino: Domino) => void
   advanceTurn: () => void
-  resetState: () => void
+  resetDominoState: () => void
 }
 
 export interface DominoSlice extends DominoState, DominoActions {}
@@ -116,5 +116,5 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
     })
   },
 
-  resetState: () => set(initialDominoState),
+  resetDominoState: () => set(initialDominoState),
 })

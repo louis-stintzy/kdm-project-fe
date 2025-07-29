@@ -5,7 +5,7 @@ import { createDominoSlice, type DominoSlice } from './slices/domino.slice'
 
 type StoreState = DominoSlice
 
-export const useBoundStore = create<StoreState>()(
+export const useGameStore = create<StoreState>()(
   devtools(
     (...a) => ({
       ...createDominoSlice(...a),
