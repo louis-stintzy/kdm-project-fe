@@ -1,13 +1,13 @@
 import { Group, Rect, Image } from 'react-konva'
 import { CELL_SIZE } from '@/constants/board'
-import type { Terrain, Tile } from '@/types/domino.types'
+import type { DominoTiles, Terrain } from '@/types/domino.types'
 import crownSrc from '@/assets/crown.png'
 import { useEffect, useState } from 'react'
 
 interface DominoProps {
   x: number
   y: number
-  tiles: [Tile, Tile]
+  tiles: DominoTiles
   playPhase?: 'draft' | 'placement' | null // Optional prop for play phase
 }
 

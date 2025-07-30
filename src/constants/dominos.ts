@@ -1,6 +1,4 @@
-import { type Domino } from '@/types/domino.types'
-
-export const DOMINOS: Domino[] = [
+export const DOMINOS = [
   //  ----- Dominos A to F -----
   {
     id: 1,
@@ -546,4 +544,4 @@ export const DOMINOS: Domino[] = [
       { terrain: 'swamp', crowns: 1 },
     ],
   },
-]
+] as const
