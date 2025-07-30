@@ -13,6 +13,7 @@ export interface DominoState {
   nextDominos: Domino[]
   discardedDominos: Domino[]
   turn: number
+  playPhase: 'draft' | 'placement' | null
 }
 
 export interface DominoActions {
@@ -47,6 +48,7 @@ export const initialDominoState: DominoState = {
   nextDominos: [],
   discardedDominos: [],
   turn: 0,
+  playPhase: null,
 }
 
 export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
@@ -59,6 +61,7 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
       nextDominos: [],
       discardedDominos: [],
       turn: 1,
+      playPhase: null,
     }))
   },
 
@@ -92,6 +95,7 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
         discardedDominos: [...state.discardedDominos, discardedDomino],
         currentDominos: turn === 1 ? remainingDominos : state.currentDominos,
         nextDominos: turn === 1 ? [] : remainingDominos,
+        playPhase: state.turn === 1 ? 'draft' : 'placement',
       }
     })
   },

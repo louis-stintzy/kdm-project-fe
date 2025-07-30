@@ -6,21 +6,22 @@ interface DominoProps {
   x: number
   y: number
   tiles: [Tile, Tile]
+  playPhase?: 'draft' | 'placement' | null // Optional prop for play phase
 }
 
-function Domino({ x, y, tiles }: DominoProps) {
+function Domino({ x, y, tiles, playPhase }: DominoProps) {
   const tileColor = (terrain: Terrain) => {
     switch (terrain) {
       case 'wheat':
-        return '#ffcc00'
+        return '#ffcc33'
       case 'forest':
-        return '#003300'
+        return '#006600'
       case 'lake':
-        return '#0000ff'
+        return '#0099ff'
       case 'grass':
         return '#00ff00'
       case 'swamp':
-        return '#808080'
+        return '#996600'
       case 'mine':
         return '#999999'
       default:
@@ -29,15 +30,23 @@ function Domino({ x, y, tiles }: DominoProps) {
   }
 
   return (
-    <Group x={x} y={y} draggable>
+    <Group draggable={playPhase === 'placement'}>
       <Rect
+        x={x}
+        y={y}
         width={CELL_SIZE}
         height={CELL_SIZE}
+        stroke={'black'}
+        strokeWidth={0.5}
         fill={tileColor(tiles[0].terrain)}
       />
       <Rect
+        x={x + CELL_SIZE}
+        y={y}
         width={CELL_SIZE}
         height={CELL_SIZE}
+        stroke={'black'}
+        strokeWidth={0.5}
         fill={tileColor(tiles[1].terrain)}
       />
     </Group>

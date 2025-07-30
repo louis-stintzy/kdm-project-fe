@@ -6,6 +6,7 @@ export const useDomino = () => {
   const nextDominos = useGameStore((state) => state.nextDominos)
   const discardedDominos = useGameStore((state) => state.discardedDominos)
   const turn = useGameStore((state) => state.turn)
+  const playPhase = useGameStore((state) => state.playPhase)
   const initDominos = useGameStore((state) => state.initDominos)
   const drawDominos = useGameStore((state) => state.drawDominos)
   const discardDomino = useGameStore((state) => state.discardDomino)
@@ -19,6 +20,7 @@ export const useDomino = () => {
     nextDominos,
     discardedDominos,
     turn,
+    playPhase,
     initDominos,
     drawDominos,
     discardDomino,
