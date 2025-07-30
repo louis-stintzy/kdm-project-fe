@@ -1,0 +1,91 @@
+import type { Pawn, PawnId, Player, PlayerId } from '@/types/player.types'
+import type { StateCreator } from 'zustand'
+
+export interface PlayerState {
+  players: Player[]
+  pawns: Pawn[]
+  currentPlayerId: PlayerId | null
+  currentPawnOrder: {
+    1: PawnId | null
+    2: PawnId | null
+    3: PawnId | null
+    4: PawnId | null
+    5: PawnId | null
+  }
+  nextPawnOrder: {
+    1: PawnId | null
+    2: PawnId | null
+    3: PawnId | null
+    4: PawnId | null
+    5: PawnId | null
+  }
+}
+
+export interface PlayerActions {
+  addPlayer: (player: Player) => void
+  removePlayer: (playerId: PlayerId) => void
+  shufflePawns: () => void
+  placePawn: (
+    pawnId: PawnId,
+    dominoList: 'currentDominos' | 'nextDominos',
+    listPosition: keyof PlayerState['currentPawnOrder'],
+  ) => void
+  resetPlayerState: () => void
+}
+export interface PlayerSlice extends PlayerState, PlayerActions {}
+
+// Use Fisher-Yates shuffle algorithm to shuffle the pawns array
+const shufflePawns = (pawns: Pawn[]): Pawn[] => {
+  const shuffledArray = [...pawns]
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)) // Random index from 0 to i
+    ;[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]] // Swap elements at i and j, ";" is used to avoid automatic semicolon insertion issues
+  }
+  return shuffledArray
+}
+
+export const initialPlayerState: PlayerState = {
+  players: [],
+  pawns: [],
+  currentPlayerId: null,
+  currentPawnOrder: {
+    1: null,
+    2: null,
+    3: null,
+    4: null,
+    5: null,
+  },
+  nextPawnOrder: {
+    1: null,
+    2: null,
+    3: null,
+    4: null,
+    5: null,
+  },
+}
+
+export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
+  ...initialPlayerState,
+  addPlayer: (player) =>
+    set((state) => ({ players: [...state.players, player] })),
+  removePlayer: (playerId) =>
+    set((state) => ({
+      players: state.players.filter((p) => p.id !== playerId),
+    })),
+  shufflePawns: () => set((state) => ({ pawns: shufflePawns(state.pawns) })),
+  placePawn: (pawnId, dominoList, listPosition) =>
+    set((state) => {
+      const targetList =
+        dominoList === 'currentDominos'
+          ? state.currentPawnOrder
+          : state.nextPawnOrder
+      const updatedList = {
+        ...targetList,
+        [listPosition]: pawnId,
+      }
+      return dominoList === 'currentDominos'
+        ? { currentPawnOrder: updatedList }
+        : { nextPawnOrder: updatedList }
+    }),
+  resetPlayerState: () => set(() => initialPlayerState),
+})
