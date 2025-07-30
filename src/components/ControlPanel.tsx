@@ -1,5 +1,5 @@
 import { useDomino } from '@/store/hooks/useDomino'
-import { Play, RotateCcw, SkipForward, Trash2 } from 'lucide-react'
+import { Dices, Play, RotateCcw, SkipForward, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 function ControlePanel() {
@@ -7,10 +7,10 @@ function ControlePanel() {
     currentDominos,
     nextDominos,
     turn,
+    playPhase,
     initDominos,
     drawDominos,
     discardDomino,
-    removeFromCurrent,
     advanceTurn,
     resetDominoState,
   } = useDomino()
@@ -25,11 +25,13 @@ function ControlePanel() {
   }
 
   const handleAdvanceTurn = () => {
-    if (nextDominos.length === 0) {
-      drawDominos(turn + 1)
-    }
     advanceTurn()
   }
+
+  const handleDrawDominos = () => {
+    drawDominos(turn)
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button
@@ -44,7 +46,9 @@ function ControlePanel() {
       <Button
         onClick={handleDiscardMiddle}
         variant="destructive"
-        // disabled={currentDominos.length !== 5}
+        disabled={
+          turn === 1 ? currentDominos.length !== 5 : nextDominos.length !== 5
+        }
         className="flex items-center gap-2"
       >
         <Trash2 className="w-4 h-4" />
@@ -53,7 +57,7 @@ function ControlePanel() {
 
       <Button
         onClick={handleAdvanceTurn}
-        // disabled={currentDominos.length === 0}
+        disabled={playPhase !== 'placement'}
         className="flex items-center gap-2"
       >
         <SkipForward className="w-4 h-4" />
@@ -61,7 +65,17 @@ function ControlePanel() {
       </Button>
 
       <Button
+        onClick={handleDrawDominos}
+        disabled={playPhase !== 'placement'}
+        className="flex items-center gap-2"
+      >
+        <Dices className="w-4 h-4" />
+        Tirer
+      </Button>
+
+      <Button
         onClick={resetDominoState}
+        disabled={playPhase !== 'placement'}
         variant="outline"
         className="flex items-center gap-2 bg-transparent"
       >

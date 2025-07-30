@@ -6,12 +6,7 @@ function NextDominos() {
   return (
     <>
       {nextDominos.map((domino, index) => (
-        <Domino
-          key={domino.id}
-          x={820}
-          y={20 + index * 60}
-          tiles={domino.tiles}
-        />
+        <Domino key={domino.id} x={970} y={index * 80} tiles={domino.tiles} />
       ))}
     </>
   )
