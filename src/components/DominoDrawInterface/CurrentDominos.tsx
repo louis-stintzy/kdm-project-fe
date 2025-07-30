@@ -8,8 +8,8 @@ function CurrentDominos() {
       {currentDominos.map((domino, index) => (
         <Domino
           key={domino.id}
-          x={700}
-          y={20 + index * 60}
+          x={800}
+          y={index * 80}
           tiles={domino.tiles}
           playPhase={playPhase} // Pass playPhase to Domino if needed
         />

@@ -4,7 +4,7 @@ import DominoDrawInterface from './DominoDrawInterface/DominoDrawInterface'
 
 function GameCanvas() {
   return (
-    <Stage width={1000} height={800}>
+    <Stage width={1200} height={800}>
       <Layer>
         <GameBoard />
       </Layer>
