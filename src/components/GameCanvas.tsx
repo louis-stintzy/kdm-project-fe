@@ -1,6 +1,7 @@
 import { Layer, Stage } from 'react-konva'
 import GameBoard from '@/components/GameBoard'
 import DominoDrawInterface from './DominoDrawInterface/DominoDrawInterface'
+import Pawns from './Pawns'
 
 function GameCanvas() {
   return (
@@ -10,6 +11,9 @@ function GameCanvas() {
       </Layer>
       <Layer>
         <DominoDrawInterface />
+      </Layer>
+      <Layer>
+        <Pawns />
       </Layer>
     </Stage>
   )

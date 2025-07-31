@@ -1,8 +1,17 @@
 import { useDomino } from '@/store/hooks/useDomino'
-import { Dices, Play, RotateCcw, SkipForward, Trash2 } from 'lucide-react'
+import {
+  Dices,
+  Play,
+  RotateCcw,
+  SkipForward,
+  Trash2,
+  UsersRound,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { usePlayer } from '@/store/hooks/usePlayer'
 
 function ControlePanel() {
+  const { toggleDialog } = usePlayer()
   const {
     currentDominos,
     nextDominos,
@@ -15,6 +24,9 @@ function ControlePanel() {
     resetDominoState,
   } = useDomino()
 
+  const handleNewGame = () => {
+    toggleDialog()
+  }
   const handleInitAndDraw = () => {
     initDominos()
     drawDominos(1)
@@ -34,6 +46,14 @@ function ControlePanel() {
 
   return (
     <div className="flex flex-wrap gap-2">
+      <Button
+        onClick={handleNewGame}
+        disabled={turn !== 0}
+        className="flex items-center gap-2"
+      >
+        <UsersRound className="w-4 h-4" />
+        Nouvelle Partie
+      </Button>
       <Button
         onClick={handleInitAndDraw}
         disabled={turn !== 0}

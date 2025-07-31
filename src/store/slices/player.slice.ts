@@ -2,6 +2,7 @@ import type { Pawn, PawnId, Player, PlayerId } from '@/types/player.types'
 import type { StateCreator } from 'zustand'
 
 export interface PlayerState {
+  dialogOpen: boolean
   players: Player[]
   pawns: Pawn[]
   currentPlayerId: PlayerId | null
@@ -22,6 +23,7 @@ export interface PlayerState {
 }
 
 export interface PlayerActions {
+  toggleDialog: () => void
   addPlayer: (player: Player) => void
   removePlayer: (playerId: PlayerId) => void
   shufflePawns: () => void
@@ -45,6 +47,7 @@ const shufflePawns = (pawns: Pawn[]): Pawn[] => {
 }
 
 export const initialPlayerState: PlayerState = {
+  dialogOpen: false,
   players: [],
   pawns: [],
   currentPlayerId: null,
@@ -66,6 +69,7 @@ export const initialPlayerState: PlayerState = {
 
 export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
   ...initialPlayerState,
+  toggleDialog: () => set((state) => ({ dialogOpen: !state.dialogOpen })),
   addPlayer: (player) =>
     set((state) => ({ players: [...state.players, player] })),
   removePlayer: (playerId) =>
