@@ -5,6 +5,7 @@ export const usePlayer = () => {
   const playersForm = useGameStore((state) => state.playersForm)
   const players = useGameStore((state) => state.players)
   const pawns = useGameStore((state) => state.pawns)
+  const mixedPawns = useGameStore((state) => state.mixedPawns)
   const currentPlayerId = useGameStore((state) => state.currentPlayerId)
   const currentPawnOrder = useGameStore((state) => state.currentPawnOrder)
   const nextPawnOrder = useGameStore((state) => state.nextPawnOrder)
@@ -23,6 +24,7 @@ export const usePlayer = () => {
     playersForm,
     players,
     pawns,
+    mixedPawns,
     currentPlayerId,
     currentPawnOrder,
     nextPawnOrder,

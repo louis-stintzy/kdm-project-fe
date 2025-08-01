@@ -20,7 +20,8 @@ import {
 import { usePlayer } from '@/store/hooks/usePlayer'
 import { useState } from 'react'
 import type { Pawn, PawnColorName, Player } from '@/types/player.types'
-import { PAWNS } from '@/constants/pawns'
+import { PAWN_COLORS, PAWNS } from '@/constants/pawns'
+import { Crown } from 'lucide-react'
 
 function NewGameDialog() {
   const initiallyAvailableColors: PawnColorName[] = [
@@ -158,6 +159,7 @@ function NewGameDialog() {
               <SelectContent>
                 {availableColors.player1.map((color) => (
                   <SelectItem key={color} value={color}>
+                    <Crown className="w-4 h-4" color={PAWN_COLORS[color]} />
                     {color.charAt(0).toUpperCase() + color.slice(1)}
                   </SelectItem>
                 ))}
@@ -188,6 +190,7 @@ function NewGameDialog() {
               <SelectContent>
                 {availableColors.player2.map((color) => (
                   <SelectItem key={color} value={color}>
+                    <Crown className="w-4 h-4" color={PAWN_COLORS[color]} />
                     {color.charAt(0).toUpperCase() + color.slice(1)}
                   </SelectItem>
                 ))}

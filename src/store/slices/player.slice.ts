@@ -21,6 +21,7 @@ export interface PlayerState {
   }
   players: Player[]
   pawns: Pawn[]
+  mixedPawns: boolean
   currentPlayerId: PlayerId | null
   currentPawnOrder: (PawnId | null)[]
   nextPawnOrder: (PawnId | null)[]
@@ -65,6 +66,7 @@ export const initialPlayerState: PlayerState = {
   },
   players: [],
   pawns: [],
+  mixedPawns: false,
   currentPlayerId: null,
   currentPawnOrder: Array.from({ length: 5 }, () => null),
   nextPawnOrder: Array.from({ length: 5 }, () => null),
@@ -91,7 +93,11 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
     set((state) => ({
       players: state.players.filter((p) => p.id !== playerId),
     })),
-  shufflePawns: () => set((state) => ({ pawns: shufflePawns(state.pawns) })),
+  shufflePawns: () =>
+    set((state) => ({
+      pawns: shufflePawns(state.pawns),
+      mixedPawns: true,
+    })),
   placePawn: (pawnId, dominoList, listPosition) =>
     set((state) => {
       const targetList =

@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button'
 import { usePlayer } from '@/store/hooks/usePlayer'
 
 function ControlePanel() {
-  const { players, toggleDialog, resetPlayerState } = usePlayer()
+  const { players, mixedPawns, toggleDialog, shufflePawns, resetPlayerState } =
+    usePlayer()
   const {
     currentDominos,
     nextDominos,
@@ -27,6 +28,12 @@ function ControlePanel() {
   const handleNewGame = () => {
     toggleDialog()
   }
+
+  const handleShufflePawns = () => {
+    if (mixedPawns) return
+    shufflePawns()
+  }
+
   const handleInitAndDraw = () => {
     initDominos()
     drawDominos(1)
@@ -60,8 +67,16 @@ function ControlePanel() {
         Nouvelle Partie
       </Button>
       <Button
+        onClick={handleShufflePawns}
+        disabled={turn !== 0 || players.length < 2 || mixedPawns}
+        className="flex items-center gap-2"
+      >
+        <Dices className="w-4 h-4" />
+        Mélanger les pions
+      </Button>
+      <Button
         onClick={handleInitAndDraw}
-        disabled={turn !== 0 || players.length < 2}
+        disabled={turn !== 0 || players.length < 2 || !mixedPawns}
         className="flex items-center gap-2"
       >
         <Play className="w-4 h-4" />
