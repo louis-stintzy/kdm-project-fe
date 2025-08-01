@@ -1,4 +1,4 @@
-import { PAWN_COLORS } from '@/constants/player'
+import { PAWN_COLORS } from '@/constants/pawns'
 import type { DominoId } from './domino.types'
 
 // ----- Pawn Types -----
@@ -31,9 +31,9 @@ export interface PawnPosition {
 export interface Pawn {
   id: PawnId
   color: PawnColor
-  position: PawnPosition
   playerId?: PlayerId
-  selectedDominoId?: DominoId | null
+  selectedDominoId?: DominoId
+  position?: PawnPosition
 }
 
 // ----- Player Types -----

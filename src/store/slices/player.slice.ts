@@ -1,8 +1,24 @@
-import type { Pawn, PawnId, Player, PlayerId } from '@/types/player.types'
+import type {
+  Pawn,
+  PawnColorName,
+  PawnId,
+  Player,
+  PlayerId,
+} from '@/types/player.types'
 import type { StateCreator } from 'zustand'
 
 export interface PlayerState {
   dialogOpen: boolean
+  playersForm: {
+    player1: {
+      name: string
+      color?: PawnColorName
+    }
+    player2: {
+      name: string
+      color?: PawnColorName
+    }
+  }
   players: Player[]
   pawns: Pawn[]
   currentPlayerId: PlayerId | null
@@ -24,6 +40,12 @@ export interface PlayerState {
 
 export interface PlayerActions {
   toggleDialog: () => void
+  setPlayersForm: (
+    player: 'player1' | 'player2',
+    field: 'name' | 'color',
+    value: string,
+  ) => void
+  resetPlayersForm: () => void
   addPlayer: (player: Player) => void
   removePlayer: (playerId: PlayerId) => void
   shufflePawns: () => void
@@ -48,6 +70,10 @@ const shufflePawns = (pawns: Pawn[]): Pawn[] => {
 
 export const initialPlayerState: PlayerState = {
   dialogOpen: false,
+  playersForm: {
+    player1: { name: 'Clover' },
+    player2: { name: 'Sam' },
+  },
   players: [],
   pawns: [],
   currentPlayerId: null,
@@ -70,6 +96,17 @@ export const initialPlayerState: PlayerState = {
 export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
   ...initialPlayerState,
   toggleDialog: () => set((state) => ({ dialogOpen: !state.dialogOpen })),
+  setPlayersForm: (player, field, value) =>
+    set((state) => ({
+      playersForm: {
+        ...state.playersForm,
+        [player]: { ...state.playersForm[player], [field]: value },
+      },
+    })),
+  resetPlayersForm: () =>
+    set(() => ({
+      playersForm: initialPlayerState.playersForm,
+    })),
   addPlayer: (player) =>
     set((state) => ({ players: [...state.players, player] })),
   removePlayer: (playerId) =>

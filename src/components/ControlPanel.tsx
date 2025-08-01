@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { usePlayer } from '@/store/hooks/usePlayer'
 
 function ControlePanel() {
-  const { toggleDialog } = usePlayer()
+  const { players, toggleDialog, resetPlayerState } = usePlayer()
   const {
     currentDominos,
     nextDominos,
@@ -44,11 +44,16 @@ function ControlePanel() {
     drawDominos(turn)
   }
 
+  const handleReset = () => {
+    resetDominoState()
+    resetPlayerState()
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button
         onClick={handleNewGame}
-        disabled={turn !== 0}
+        disabled={players.length > 1}
         className="flex items-center gap-2"
       >
         <UsersRound className="w-4 h-4" />
@@ -56,7 +61,7 @@ function ControlePanel() {
       </Button>
       <Button
         onClick={handleInitAndDraw}
-        disabled={turn !== 0}
+        disabled={turn !== 0 || players.length < 2}
         className="flex items-center gap-2"
       >
         <Play className="w-4 h-4" />
@@ -94,8 +99,7 @@ function ControlePanel() {
       </Button>
 
       <Button
-        onClick={resetDominoState}
-        disabled={playPhase !== 'placement'}
+        onClick={handleReset}
         variant="outline"
         className="flex items-center gap-2 bg-transparent"
       >
