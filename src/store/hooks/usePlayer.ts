@@ -12,6 +12,7 @@ export const usePlayer = () => {
   const setPlayersForm = useGameStore((state) => state.setPlayersForm)
   const resetPlayersForm = useGameStore((state) => state.resetPlayersForm)
   const addPlayer = useGameStore((state) => state.addPlayer)
+  const addPawns = useGameStore((state) => state.addPawns)
   const removePlayer = useGameStore((state) => state.removePlayer)
   const shufflePawns = useGameStore((state) => state.shufflePawns)
   const placePawn = useGameStore((state) => state.placePawn)
@@ -29,6 +30,7 @@ export const usePlayer = () => {
     setPlayersForm,
     resetPlayersForm,
     addPlayer,
+    addPawns,
     removePlayer,
     shufflePawns,
     placePawn,

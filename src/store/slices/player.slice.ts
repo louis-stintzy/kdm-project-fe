@@ -12,30 +12,18 @@ export interface PlayerState {
   playersForm: {
     player1: {
       name: string
-      color?: PawnColorName
+      color: PawnColorName | ''
     }
     player2: {
       name: string
-      color?: PawnColorName
+      color: PawnColorName | ''
     }
   }
   players: Player[]
   pawns: Pawn[]
   currentPlayerId: PlayerId | null
-  currentPawnOrder: {
-    1: PawnId | null
-    2: PawnId | null
-    3: PawnId | null
-    4: PawnId | null
-    5: PawnId | null
-  }
-  nextPawnOrder: {
-    1: PawnId | null
-    2: PawnId | null
-    3: PawnId | null
-    4: PawnId | null
-    5: PawnId | null
-  }
+  currentPawnOrder: (PawnId | null)[]
+  nextPawnOrder: (PawnId | null)[]
 }
 
 export interface PlayerActions {
@@ -47,6 +35,7 @@ export interface PlayerActions {
   ) => void
   resetPlayersForm: () => void
   addPlayer: (player: Player) => void
+  addPawns: (pawns: Pawn[]) => void
   removePlayer: (playerId: PlayerId) => void
   shufflePawns: () => void
   placePawn: (
@@ -71,26 +60,14 @@ const shufflePawns = (pawns: Pawn[]): Pawn[] => {
 export const initialPlayerState: PlayerState = {
   dialogOpen: false,
   playersForm: {
-    player1: { name: 'Clover' },
-    player2: { name: 'Sam' },
+    player1: { name: 'Clover', color: '' },
+    player2: { name: 'Sam', color: '' },
   },
   players: [],
   pawns: [],
   currentPlayerId: null,
-  currentPawnOrder: {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-  },
-  nextPawnOrder: {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-  },
+  currentPawnOrder: Array.from({ length: 5 }, () => null),
+  nextPawnOrder: Array.from({ length: 5 }, () => null),
 }
 
 export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
@@ -109,6 +86,7 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
     })),
   addPlayer: (player) =>
     set((state) => ({ players: [...state.players, player] })),
+  addPawns: (pawns) => set((state) => ({ pawns: [...state.pawns, ...pawns] })),
   removePlayer: (playerId) =>
     set((state) => ({
       players: state.players.filter((p) => p.id !== playerId),

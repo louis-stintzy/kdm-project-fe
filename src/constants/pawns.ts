@@ -1,9 +1,9 @@
 export const PAWN_COLORS = {
   yellow: '#F7E03D',
-  blue: '#3D8FF7',
-  green: '#3DF7A0',
+  blue: '#0053BA',
+  green: '#059C18',
   pink: '#F73D8F',
-  brown: '#8F3DF7',
+  brown: '#5E3400',
 } as const
 
 export const PAWNS = [

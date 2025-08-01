@@ -48,6 +48,6 @@ export type PlayerId =
 export interface Player {
   id: PlayerId
   name: string
-  pawns: Pawn[]
+  pawnIds: PawnId[]
   score: number
 }

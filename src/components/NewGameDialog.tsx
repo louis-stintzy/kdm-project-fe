@@ -19,7 +19,7 @@ import {
 } from './ui/select'
 import { usePlayer } from '@/store/hooks/usePlayer'
 import { useState } from 'react'
-import type { PawnColorName, Player } from '@/types/player.types'
+import type { Pawn, PawnColorName, Player } from '@/types/player.types'
 import { PAWNS } from '@/constants/pawns'
 
 function NewGameDialog() {
@@ -41,6 +41,7 @@ function NewGameDialog() {
     setPlayersForm,
     resetPlayersForm,
     addPlayer,
+    addPawns,
   } = usePlayer()
 
   const handleColorSelect = (
@@ -59,8 +60,12 @@ function NewGameDialog() {
   }
 
   const handleSubmit = () => {
-    if (!playersForm.player1.name && !playersForm.player2.name) {
-      console.error('Players must have names')
+    if (!playersForm.player1.name || !playersForm.player2.name) {
+      console.error('Both players must have names')
+      return
+    }
+    if (playersForm.player1.name === playersForm.player2.name) {
+      console.error('Players must have different names')
       return
     }
     if (!playersForm.player1.color || !playersForm.player2.color) {
@@ -75,30 +80,38 @@ function NewGameDialog() {
     const player1: Player = {
       id: 'player-1',
       name: playersForm.player1.name,
-      pawns: PAWNS.filter(
+      pawnIds: PAWNS.filter(
         (pawn) => pawn.color.name === playersForm.player1.color,
-      ).map((pawn) => ({
-        ...pawn,
-        playerId: 'player-1',
-      })),
+      ).map((pawn) => pawn.id),
       score: 0,
     }
+    const player1Pawns: Pawn[] = PAWNS.filter(
+      (pawn) => pawn.color.name === playersForm.player1.color,
+    ).map((pawn) => ({
+      ...pawn,
+      playerId: 'player-1',
+    }))
 
     addPlayer(player1)
+    addPawns(player1Pawns)
 
     const player2: Player = {
       id: 'player-2',
       name: playersForm.player2.name,
-      pawns: PAWNS.filter(
+      pawnIds: PAWNS.filter(
         (pawn) => pawn.color.name === playersForm.player2.color,
-      ).map((pawn) => ({
-        ...pawn,
-        playerId: 'player-2',
-      })),
+      ).map((pawn) => pawn.id),
       score: 0,
     }
+    const player2Pawns: Pawn[] = PAWNS.filter(
+      (pawn) => pawn.color.name === playersForm.player2.color,
+    ).map((pawn) => ({
+      ...pawn,
+      playerId: 'player-2',
+    }))
 
     addPlayer(player2)
+    addPawns(player2Pawns)
 
     resetPlayersForm()
     setAvailableColors({
@@ -189,8 +202,12 @@ function NewGameDialog() {
           </DialogClose>
           <Button
             disabled={
-              availableColors.player1.length === 5 ||
-              availableColors.player2.length === 5
+              !playersForm.player1.name.trim() ||
+              !playersForm.player2.name.trim() ||
+              playersForm.player1.name === playersForm.player2.name ||
+              !playersForm.player1.color ||
+              !playersForm.player2.color ||
+              playersForm.player1.color === playersForm.player2.color
             }
             type="button"
             onClick={handleSubmit}
