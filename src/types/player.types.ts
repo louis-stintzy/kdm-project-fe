@@ -1,20 +1,9 @@
-import { PAWN_COLORS } from '@/constants/pawns'
+import { PAWN_COLORS, PAWNS } from '@/constants/pawns'
 import type { DominoId } from './domino.types'
 
 // ----- Pawn Types -----
 
-export type PawnId =
-  | 'yellow-1'
-  | 'yellow-2'
-  | 'blue-1'
-  | 'blue-2'
-  | 'green-1'
-  | 'green-2'
-  | 'pink-1'
-  | 'pink-2'
-  | 'brown-1'
-  | 'brown-2'
-
+export type PawnId = (typeof PAWNS)[number]['id']
 export type PawnColorName = keyof typeof PAWN_COLORS
 export type PawnColorHex = (typeof PAWN_COLORS)[PawnColorName]
 
@@ -31,6 +20,7 @@ export interface PawnPosition {
 export interface Pawn {
   id: PawnId
   color: PawnColor
+  isDraggable: boolean
   playerId?: PlayerId
   selectedDominoId?: DominoId
   position?: PawnPosition

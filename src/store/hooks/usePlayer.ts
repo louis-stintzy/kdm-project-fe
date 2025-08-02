@@ -5,8 +5,8 @@ export const usePlayer = () => {
   const playersForm = useGameStore((state) => state.playersForm)
   const players = useGameStore((state) => state.players)
   const pawns = useGameStore((state) => state.pawns)
-  const mixedPawns = useGameStore((state) => state.mixedPawns)
-  const currentPlayerId = useGameStore((state) => state.currentPlayerId)
+  const shuffledPawnOrder = useGameStore((state) => state.shuffledPawnOrder)
+  const currentPlayer = useGameStore((state) => state.currentPlayer)
   const currentPawnOrder = useGameStore((state) => state.currentPawnOrder)
   const nextPawnOrder = useGameStore((state) => state.nextPawnOrder)
   const toggleDialog = useGameStore((state) => state.toggleDialog)
@@ -16,6 +16,8 @@ export const usePlayer = () => {
   const addPawns = useGameStore((state) => state.addPawns)
   const removePlayer = useGameStore((state) => state.removePlayer)
   const shufflePawns = useGameStore((state) => state.shufflePawns)
+  const canTakePosition = useGameStore((state) => state.canTakePosition)
+  const updatePawnPosition = useGameStore((state) => state.updatePawnPosition)
   const placePawn = useGameStore((state) => state.placePawn)
   const resetPlayerState = useGameStore((state) => state.resetPlayerState)
 
@@ -24,8 +26,8 @@ export const usePlayer = () => {
     playersForm,
     players,
     pawns,
-    mixedPawns,
-    currentPlayerId,
+    shuffledPawnOrder,
+    currentPlayer,
     currentPawnOrder,
     nextPawnOrder,
     toggleDialog,
@@ -35,6 +37,8 @@ export const usePlayer = () => {
     addPawns,
     removePlayer,
     shufflePawns,
+    canTakePosition,
+    updatePawnPosition,
     placePawn,
     resetPlayerState,
   }

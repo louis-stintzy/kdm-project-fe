@@ -7,14 +7,54 @@ export const PAWN_COLORS = {
 } as const
 
 export const PAWNS = [
-  { id: 'yellow-1', color: { name: 'yellow', hex: PAWN_COLORS.yellow } },
-  { id: 'yellow-2', color: { name: 'yellow', hex: PAWN_COLORS.yellow } },
-  { id: 'blue-1', color: { name: 'blue', hex: PAWN_COLORS.blue } },
-  { id: 'blue-2', color: { name: 'blue', hex: PAWN_COLORS.blue } },
-  { id: 'green-1', color: { name: 'green', hex: PAWN_COLORS.green } },
-  { id: 'green-2', color: { name: 'green', hex: PAWN_COLORS.green } },
-  { id: 'pink-1', color: { name: 'pink', hex: PAWN_COLORS.pink } },
-  { id: 'pink-2', color: { name: 'pink', hex: PAWN_COLORS.pink } },
-  { id: 'brown-1', color: { name: 'brown', hex: PAWN_COLORS.brown } },
-  { id: 'brown-2', color: { name: 'brown', hex: PAWN_COLORS.brown } },
+  {
+    id: 'yellow-1',
+    color: { name: 'yellow', hex: PAWN_COLORS.yellow },
+    isDraggable: false,
+  },
+  {
+    id: 'yellow-2',
+    color: { name: 'yellow', hex: PAWN_COLORS.yellow },
+    isDraggable: false,
+  },
+  {
+    id: 'blue-1',
+    color: { name: 'blue', hex: PAWN_COLORS.blue },
+    isDraggable: false,
+  },
+  {
+    id: 'blue-2',
+    color: { name: 'blue', hex: PAWN_COLORS.blue },
+    isDraggable: false,
+  },
+  {
+    id: 'green-1',
+    color: { name: 'green', hex: PAWN_COLORS.green },
+    isDraggable: false,
+  },
+  {
+    id: 'green-2',
+    color: { name: 'green', hex: PAWN_COLORS.green },
+    isDraggable: false,
+  },
+  {
+    id: 'pink-1',
+    color: { name: 'pink', hex: PAWN_COLORS.pink },
+    isDraggable: false,
+  },
+  {
+    id: 'pink-2',
+    color: { name: 'pink', hex: PAWN_COLORS.pink },
+    isDraggable: false,
+  },
+  {
+    id: 'brown-1',
+    color: { name: 'brown', hex: PAWN_COLORS.brown },
+    isDraggable: false,
+  },
+  {
+    id: 'brown-2',
+    color: { name: 'brown', hex: PAWN_COLORS.brown },
+    isDraggable: false,
+  },
 ] as const

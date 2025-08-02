@@ -1,20 +1,34 @@
 import { usePlayer } from '@/store/hooks/usePlayer'
+import type { PawnId } from '@/types/player.types'
 import { Circle } from 'react-konva'
 
 function Pawns() {
-  const { pawns, mixedPawns } = usePlayer()
-  if (!mixedPawns) return null
+  const { pawns, shuffledPawnOrder, updatePawnPosition } = usePlayer()
+  if (!shuffledPawnOrder.length) return null
+
+  const handleDragEnd = (
+    pawnId: PawnId,
+    newPosition: { x: number; y: number },
+  ) => {
+    updatePawnPosition(pawnId, newPosition)
+  }
+
   return (
     <>
-      {pawns.map((pawn, index) => (
+      {pawns.map((pawn) => (
         <Circle
           key={pawn.id}
-          x={700}
-          y={25 + 5 + index * 80}
-          radius={10}
-          stroke="black"
-          strokeWidth={1}
+          draggable={pawn.isDraggable}
+          x={pawn.position?.x}
+          y={pawn.position?.y}
+          radius={15}
+          stroke={pawn.isDraggable ? 'black' : 'gray'}
+          strokeWidth={2}
           fill={pawn.color.hex}
+          onDragEnd={(e) => {
+            const newPosition = { x: e.target.x(), y: e.target.y() }
+            handleDragEnd(pawn.id, newPosition)
+          }}
         />
       ))}
     </>

@@ -21,8 +21,8 @@ export interface PlayerState {
   }
   players: Player[]
   pawns: Pawn[]
-  mixedPawns: boolean
-  currentPlayerId: PlayerId | null
+  shuffledPawnOrder: PawnId[]
+  currentPlayer: Player | null
   currentPawnOrder: (PawnId | null)[]
   nextPawnOrder: (PawnId | null)[]
 }
@@ -39,6 +39,13 @@ export interface PlayerActions {
   addPawns: (pawns: Pawn[]) => void
   removePlayer: (playerId: PlayerId) => void
   shufflePawns: () => void
+  canTakePosition: (
+    pawnOrderList: 'shuffledPawnOrder' | 'currentPawnOrder',
+  ) => void
+  updatePawnPosition: (
+    pawnId: PawnId,
+    newPosition: { x: number; y: number },
+  ) => void
   placePawn: (
     pawnId: PawnId,
     dominoList: 'currentDominos' | 'nextDominos',
@@ -66,8 +73,8 @@ export const initialPlayerState: PlayerState = {
   },
   players: [],
   pawns: [],
-  mixedPawns: false,
-  currentPlayerId: null,
+  shuffledPawnOrder: [],
+  currentPlayer: null,
   currentPawnOrder: Array.from({ length: 5 }, () => null),
   nextPawnOrder: Array.from({ length: 5 }, () => null),
 }
@@ -94,9 +101,57 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
       players: state.players.filter((p) => p.id !== playerId),
     })),
   shufflePawns: () =>
+    set((state) => {
+      const shuffledPawns = shufflePawns(state.pawns)
+      return {
+        pawns: shuffledPawns.map((pawn, index) => ({
+          ...pawn,
+          position: {
+            x: 700,
+            y: 25 + 5 + index * 80,
+          },
+        })),
+        shuffledPawnOrder: shuffledPawns.map((pawn) => pawn.id),
+      }
+    }),
+  canTakePosition: (pawnOrderList) =>
+    set((state) => {
+      const targetPawnOrder =
+        pawnOrderList === 'shuffledPawnOrder'
+          ? state.shuffledPawnOrder
+          : state.currentPawnOrder
+      const targetPawnId = targetPawnOrder[0]
+      const targetPawn = state.pawns.find((pawn) => pawn.id === targetPawnId)
+      if (!targetPawn) {
+        console.error('Pawn not found:', targetPawnId)
+        return state
+      }
+      const targetPlayer = state.players.find(
+        (player) => player.id === targetPawn.playerId,
+      )
+      if (!targetPlayer) {
+        console.error('Player not found for pawn:', targetPawnId)
+        return state
+      }
+      const updatedTargetPawn = {
+        ...targetPawn,
+        isDraggable: true,
+      }
+      const updatedPawnOrder = targetPawnOrder.shift()
+      return {
+        ...state,
+        [pawnOrderList]: updatedPawnOrder,
+        pawns: state.pawns.map((pawn) =>
+          pawn.id === targetPawnId ? updatedTargetPawn : pawn,
+        ),
+        currentPlayer: targetPlayer,
+      }
+    }),
+  updatePawnPosition: (pawnId, newPosition) =>
     set((state) => ({
-      pawns: shufflePawns(state.pawns),
-      mixedPawns: true,
+      pawns: state.pawns.map((pawn) =>
+        pawn.id === pawnId ? { ...pawn, position: newPosition } : pawn,
+      ),
     })),
   placePawn: (pawnId, dominoList, listPosition) =>
     set((state) => {
