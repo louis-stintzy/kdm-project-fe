@@ -1,4 +1,9 @@
 import { DOMINOS } from '@/constants/dominos'
+import {
+  DOMINO_SPACING,
+  STARTING_X_POSITION_CURRENT_DOMINOS,
+  STARTING_X_POSITION_NEXT_DOMINOS,
+} from '@/constants/drawInterface'
 import type { Domino } from '@/types/domino.types'
 import type { StateCreator } from 'zustand'
 
@@ -55,24 +60,40 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
   ...initialDominoState,
 
   initDominos: () => {
-    set(() => ({
-      stackDominos: shuffleDominos([...DOMINOS]),
-      currentDominos: [],
-      nextDominos: [],
-      discardedDominos: [],
-      turn: 1,
-      playPhase: null,
-    }))
+    set(() => {
+      const dominos: Domino[] = DOMINOS.map((domino) => ({
+        ...domino,
+        isDraggable: false,
+      }))
+      return {
+        stackDominos: shuffleDominos(dominos),
+        currentDominos: [],
+        nextDominos: [],
+        discardedDominos: [],
+        turn: 1,
+        playPhase: null,
+      }
+    })
   },
 
   drawDominos: (turn) => {
     set((state) => {
       const drawnDominos = drawAndSortDominos(state.stackDominos)
+      const updatedDrawnDominos = drawnDominos.map((domino, index) => ({
+        ...domino,
+        position: {
+          x:
+            turn === 1
+              ? STARTING_X_POSITION_CURRENT_DOMINOS
+              : STARTING_X_POSITION_NEXT_DOMINOS,
+          y: index * DOMINO_SPACING,
+        },
+      }))
       const updatedStack = state.stackDominos.slice(NUMBER_OF_DRAWNS)
       return {
         stackDominos: updatedStack,
-        currentDominos: turn === 1 ? drawnDominos : state.currentDominos,
-        nextDominos: turn === 1 ? [] : drawnDominos,
+        currentDominos: turn === 1 ? updatedDrawnDominos : state.currentDominos,
+        nextDominos: turn === 1 ? [] : updatedDrawnDominos,
       }
     })
   },
@@ -87,9 +108,18 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
       const targetDominos =
         turn === 1 ? state.currentDominos : state.nextDominos
       const discardedDomino = targetDominos[MIDDLE_INDEX]
-      const remainingDominos = targetDominos.filter(
-        (_, i) => i !== MIDDLE_INDEX,
-      )
+      const remainingDominos = targetDominos
+        .filter((_, i) => i !== MIDDLE_INDEX)
+        .map((domino, index) => ({
+          ...domino,
+          position: {
+            x:
+              turn === 1
+                ? STARTING_X_POSITION_CURRENT_DOMINOS
+                : STARTING_X_POSITION_NEXT_DOMINOS,
+            y: index * DOMINO_SPACING,
+          },
+        }))
 
       return {
         discardedDominos: [...state.discardedDominos, discardedDomino],

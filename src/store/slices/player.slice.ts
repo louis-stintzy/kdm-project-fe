@@ -1,3 +1,8 @@
+import { CELL_SIZE } from '@/constants/board'
+import {
+  DOMINO_SPACING,
+  STARTING_X_POSITION_PAWNS,
+} from '@/constants/drawInterface'
 import type {
   Pawn,
   PawnColorName,
@@ -107,8 +112,8 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         pawns: shuffledPawns.map((pawn, index) => ({
           ...pawn,
           position: {
-            x: 700,
-            y: 25 + 5 + index * 80,
+            x: STARTING_X_POSITION_PAWNS,
+            y: Math.ceil(CELL_SIZE / 2 + index * DOMINO_SPACING),
           },
         })),
         shuffledPawnOrder: shuffledPawns.map((pawn) => pawn.id),

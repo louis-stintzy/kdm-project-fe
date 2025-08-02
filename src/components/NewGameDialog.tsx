@@ -91,6 +91,7 @@ function NewGameDialog() {
     ).map((pawn) => ({
       ...pawn,
       playerId: 'player-1',
+      isDraggable: false,
     }))
 
     addPlayer(player1)
@@ -109,6 +110,7 @@ function NewGameDialog() {
     ).map((pawn) => ({
       ...pawn,
       playerId: 'player-2',
+      isDraggable: false,
     }))
 
     addPlayer(player2)

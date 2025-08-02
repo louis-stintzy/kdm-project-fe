@@ -8,14 +8,16 @@ export type DominoTile = (typeof DOMINOS)[number]['tiles'][number]
 
 export type Terrain = DominoTile['terrain']
 
-// export interface Tile {
-//   terrain: Terrain
-//   crowns: number
-// }
+export interface DominoPosition {
+  x: number
+  y: number
+}
 
 export interface Domino {
   id: DominoId
   label: DominoLabel
   order: DominoOrder
   tiles: DominoTiles
+  isDraggable: boolean
+  position?: DominoPosition
 }

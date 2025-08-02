@@ -1,0 +1,6 @@
+import { CELL_SIZE } from './board'
+
+export const STARTING_X_POSITION_PAWNS = 700
+export const STARTING_X_POSITION_CURRENT_DOMINOS = 800
+export const STARTING_X_POSITION_NEXT_DOMINOS = 970
+export const DOMINO_SPACING = CELL_SIZE + 10
