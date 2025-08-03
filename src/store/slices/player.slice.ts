@@ -3,6 +3,7 @@ import {
   DOMINO_SPACING,
   STARTING_X_POSITION_PAWNS,
 } from '@/constants/drawInterface'
+import type { Domino } from '@/types/domino.types'
 import type {
   Pawn,
   PawnColorName,
@@ -44,12 +45,17 @@ export interface PlayerActions {
   addPawns: (pawns: Pawn[]) => void
   removePlayer: (playerId: PlayerId) => void
   shufflePawns: () => void
-  canTakePosition: (
+  pawnCanTakePosition: (
     pawnOrderList: 'shuffledPawnOrder' | 'currentPawnOrder',
   ) => void
   updatePawnPosition: (
     pawnId: PawnId,
     newPosition: { x: number; y: number },
+  ) => void
+  pawnTakesPositionOnDomino: (
+    pawnId: PawnId,
+    onDomino: boolean,
+    domino?: Domino,
   ) => void
   placePawn: (
     pawnId: PawnId,
@@ -119,7 +125,7 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         shuffledPawnOrder: shuffledPawns.map((pawn) => pawn.id),
       }
     }),
-  canTakePosition: (pawnOrderList) =>
+  pawnCanTakePosition: (pawnOrderList) =>
     set((state) => {
       const targetPawnOrder =
         pawnOrderList === 'shuffledPawnOrder'
@@ -141,6 +147,7 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
       const updatedTargetPawn = {
         ...targetPawn,
         isDraggable: true,
+        currentPawn: true,
       }
       const updatedPawnOrder = targetPawnOrder.shift()
       return {
@@ -158,6 +165,26 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         pawn.id === pawnId ? { ...pawn, position: newPosition } : pawn,
       ),
     })),
+  pawnTakesPositionOnDomino: (pawnId, onDomino, domino?) =>
+    set((state) => {
+      const targetPawn = state.pawns.find((pawn) => pawn.id === pawnId)
+      if (!targetPawn) {
+        console.error('Pawn not found:', pawnId)
+        return state
+      }
+      const updatedPawn = {
+        ...targetPawn,
+        selectedDomino: {
+          confirmed: false,
+          domino: onDomino ? domino : undefined,
+        },
+      }
+      return {
+        pawns: state.pawns.map((pawn) =>
+          pawn.id === pawnId ? updatedPawn : pawn,
+        ),
+      }
+    }),
   placePawn: (pawnId, dominoList, listPosition) =>
     set((state) => {
       const targetList =

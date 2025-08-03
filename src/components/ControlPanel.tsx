@@ -19,7 +19,7 @@ function ControlePanel() {
     currentPawnOrder,
     toggleDialog,
     shufflePawns,
-    canTakePosition,
+    pawnCanTakePosition,
     resetPlayerState,
   } = usePlayer()
   const {
@@ -54,11 +54,11 @@ function ControlePanel() {
 
   const handleSelectDomino = () => {
     if (turn === 1 && shuffledPawnOrder.length) {
-      canTakePosition('shuffledPawnOrder')
+      pawnCanTakePosition('shuffledPawnOrder')
       return
     }
     if (currentPawnOrder.length) {
-      canTakePosition('currentPawnOrder')
+      pawnCanTakePosition('currentPawnOrder')
       return
     }
     console.error('No pawns available to select a domino')

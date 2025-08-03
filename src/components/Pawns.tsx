@@ -7,7 +7,12 @@ import { Circle } from 'react-konva'
 
 function Pawns() {
   const { currentDominos, nextDominos, turn, playPhase } = useDomino()
-  const { pawns, shuffledPawnOrder, updatePawnPosition } = usePlayer()
+  const {
+    pawns,
+    shuffledPawnOrder,
+    updatePawnPosition,
+    pawnTakesPositionOnDomino,
+  } = usePlayer()
 
   // if (turn === 0 || !currentDominos.length) return null
   if (!shuffledPawnOrder.length) return null
@@ -30,11 +35,15 @@ function Pawns() {
           newPosition.y >= domino.position?.y &&
           newPosition.y <= domino.position?.y + CELL_SIZE,
       )
-      console.log('Target Domino:', targetDomino)
       if (targetDomino) {
         console.log('Pawn placed on a domino: ', targetDomino)
+        pawnTakesPositionOnDomino(pawnId, true, targetDomino)
         // TODO: confirmer le choix du domino + placer le pion au centre du domino (voir placeDomino de la slice domino) + si ok PR et passer à la phase placement
+      } else {
+        console.log('No domino found')
+        pawnTakesPositionOnDomino(pawnId, false)
       }
+      return
     }
     if (playPhase === 'draft' && turn !== 1) {
       console.log(`Pawn ${pawnId} placed at`, newPosition)

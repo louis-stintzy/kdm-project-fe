@@ -1,5 +1,5 @@
 import { PAWN_COLORS, PAWNS } from '@/constants/pawns'
-import type { DominoId } from './domino.types'
+import type { Domino } from './domino.types'
 
 // ----- Pawn Types -----
 
@@ -20,9 +20,13 @@ export interface PawnPosition {
 export interface Pawn {
   id: PawnId
   color: PawnColor
+  currentPawn: boolean
   isDraggable: boolean
   playerId?: PlayerId
-  selectedDominoId?: DominoId
+  selectedDomino?: {
+    confirmed: boolean
+    domino: Domino | undefined
+  }
   position?: PawnPosition
 }
 

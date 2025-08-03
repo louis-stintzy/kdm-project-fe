@@ -16,8 +16,11 @@ export const usePlayer = () => {
   const addPawns = useGameStore((state) => state.addPawns)
   const removePlayer = useGameStore((state) => state.removePlayer)
   const shufflePawns = useGameStore((state) => state.shufflePawns)
-  const canTakePosition = useGameStore((state) => state.canTakePosition)
+  const pawnCanTakePosition = useGameStore((state) => state.pawnCanTakePosition)
   const updatePawnPosition = useGameStore((state) => state.updatePawnPosition)
+  const pawnTakesPositionOnDomino = useGameStore(
+    (state) => state.pawnTakesPositionOnDomino,
+  )
   const placePawn = useGameStore((state) => state.placePawn)
   const resetPlayerState = useGameStore((state) => state.resetPlayerState)
 
@@ -37,8 +40,9 @@ export const usePlayer = () => {
     addPawns,
     removePlayer,
     shufflePawns,
-    canTakePosition,
+    pawnCanTakePosition,
     updatePawnPosition,
+    pawnTakesPositionOnDomino,
     placePawn,
     resetPlayerState,
   }

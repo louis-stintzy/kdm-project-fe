@@ -5,6 +5,7 @@ import {
   STARTING_X_POSITION_NEXT_DOMINOS,
 } from '@/constants/drawInterface'
 import type { Domino } from '@/types/domino.types'
+import type { PlayPhase } from '@/types/game.types'
 import type { StateCreator } from 'zustand'
 
 const DOMINOS_COUNT = DOMINOS.length // Total number of dominos
@@ -18,7 +19,7 @@ export interface DominoState {
   nextDominos: Domino[]
   discardedDominos: Domino[]
   turn: number
-  playPhase: 'draft' | 'placement' | null
+  playPhase: PlayPhase | null
 }
 
 export interface DominoActions {
