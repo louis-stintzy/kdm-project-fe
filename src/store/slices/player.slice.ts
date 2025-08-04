@@ -1,6 +1,8 @@
 import { CELL_SIZE } from '@/constants/board'
 import {
   DOMINO_SPACING,
+  STARTING_X_POSITION_CURRENT_DOMINOS,
+  STARTING_X_POSITION_NEXT_DOMINOS,
   STARTING_X_POSITION_PAWNS,
 } from '@/constants/drawInterface'
 import type { Domino } from '@/types/domino.types'
@@ -149,7 +151,9 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         isDraggable: true,
         currentPawn: true,
       }
-      const updatedPawnOrder = targetPawnOrder.shift()
+      const updatedPawnOrder = targetPawnOrder.filter(
+        (id) => id !== targetPawnId,
+      )
       return {
         ...state,
         [pawnOrderList]: updatedPawnOrder,
@@ -191,13 +195,88 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         dominoList === 'currentDominos'
           ? state.currentPawnOrder
           : state.nextPawnOrder
+      const pawnOrderList2 =
+        dominoList === 'currentDominos' ? 'currentPawnOrder' : 'nextPawnOrder'
       const updatedList = {
         ...targetList,
         [listPosition]: pawnId,
       }
-      return dominoList === 'currentDominos'
-        ? { currentPawnOrder: updatedList }
-        : { nextPawnOrder: updatedList }
+      const targetPawn = state.pawns.find((pawn) => pawn.id === pawnId)
+      if (!targetPawn) {
+        console.error('Pawn not found:', pawnId)
+        return state
+      }
+      const updatedPawn = {
+        ...targetPawn,
+        currentPawn: false,
+        isDraggable: false,
+        selectedDomino: {
+          confirmed: true,
+          domino: targetPawn.selectedDomino?.domino,
+        },
+        position: {
+          x:
+            dominoList === 'currentDominos'
+              ? STARTING_X_POSITION_CURRENT_DOMINOS + CELL_SIZE
+              : STARTING_X_POSITION_NEXT_DOMINOS + CELL_SIZE,
+          y: Math.ceil(
+            CELL_SIZE / 2 + DOMINO_SPACING * (listPosition as number),
+          ),
+        },
+      }
+      const targetPawnOrder =
+        dominoList === 'currentDominos'
+          ? state.shuffledPawnOrder
+          : state.currentPawnOrder
+      // ----- If there are no pawns left to place, move on to the domino placement phase -----
+      if (targetPawnOrder.length === 0) {
+        console.log('No pawns left to place')
+        return {
+          pawns: state.pawns.map((pawn) =>
+            pawn.id === pawnId ? updatedPawn : pawn,
+          ),
+          currentPlayer: null,
+          [pawnOrderList2]: updatedList,
+        }
+      }
+      const nextTargetPawnId = targetPawnOrder[0]
+      const nextTargetPawn = state.pawns.find(
+        (pawn) => pawn.id === nextTargetPawnId,
+      )
+      if (!nextTargetPawn) {
+        console.error('Pawn not found:', nextTargetPawnId)
+        return state
+      }
+      const nextTargetPlayer = state.players.find(
+        (player) => player.id === nextTargetPawn.playerId,
+      )
+      if (!nextTargetPlayer) {
+        console.error('Player not found for pawn:', nextTargetPawnId)
+        return state
+      }
+      const updatedNextTargetPawn = {
+        ...nextTargetPawn,
+        isDraggable: true,
+        currentPawn: true,
+      }
+      const updatedPawnOrder = targetPawnOrder.filter(
+        (id) => id !== nextTargetPawnId,
+      )
+      const pawnOrderList1 =
+        dominoList === 'currentDominos'
+          ? 'shuffledPawnOrder'
+          : 'currentPawnOrder'
+
+      return {
+        pawns: state.pawns
+          .map((pawn) => (pawn.id === pawnId ? updatedPawn : pawn))
+          .map((pawn) =>
+            pawn.id === nextTargetPawnId ? updatedNextTargetPawn : pawn,
+          ),
+        [pawnOrderList1]: updatedPawnOrder,
+        [pawnOrderList2]: updatedList,
+        currentPlayer: nextTargetPlayer,
+      }
     }),
   resetPlayerState: () => set(() => initialPlayerState),
 })

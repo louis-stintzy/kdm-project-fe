@@ -9,13 +9,13 @@ function Pawns() {
   const { currentDominos, nextDominos, turn, playPhase } = useDomino()
   const {
     pawns,
-    shuffledPawnOrder,
+    // shuffledPawnOrder,
     updatePawnPosition,
     pawnTakesPositionOnDomino,
   } = usePlayer()
 
   // if (turn === 0 || !currentDominos.length) return null
-  if (!shuffledPawnOrder.length) return null
+  // if (!shuffledPawnOrder.length) return null
 
   const handleDragEnd = (
     pawnId: PawnId,
@@ -60,7 +60,7 @@ function Pawns() {
           x={pawn.position?.x}
           y={pawn.position?.y}
           radius={PAWNS_SIZE}
-          stroke={pawn.isDraggable ? 'black' : 'gray'}
+          stroke={pawn.isDraggable ? `${pawn.color.hex}75` : `black`}
           strokeWidth={2}
           fill={pawn.color.hex}
           onDragEnd={(e) => {

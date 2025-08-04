@@ -2,6 +2,7 @@ import { useDomino } from '@/store/hooks/useDomino'
 import {
   Dices,
   Hand,
+  LandPlot,
   Play,
   RotateCcw,
   SkipForward,
@@ -30,6 +31,7 @@ function ControlePanel() {
     initDominos,
     drawDominos,
     discardDomino,
+    togglePhase,
     advanceTurn,
     resetDominoState,
   } = useDomino()
@@ -62,6 +64,10 @@ function ControlePanel() {
       return
     }
     console.error('No pawns available to select a domino')
+  }
+
+  const handlePlaceDomino = () => {
+    togglePhase()
   }
 
   const handleAdvanceTurn = () => {
@@ -132,12 +138,30 @@ function ControlePanel() {
           className="flex items-center gap-2"
         >
           <Hand className="w-4 h-4" />
-          Choisir un domino
+          Choisir les dominos
+        </Button>
+
+        <Button
+          onClick={handlePlaceDomino}
+          disabled={
+            players.length < 2 ||
+            playPhase === 'placement' ||
+            pawns.some((pawn) => pawn.isDraggable) ||
+            shuffledPawnOrder.length !== 0
+          }
+          className="flex items-center gap-2"
+        >
+          <LandPlot className="w-4 h-4" />
+          Placer
         </Button>
 
         <Button
           onClick={handleAdvanceTurn}
-          disabled={playPhase !== 'placement'}
+          disabled={
+            players.length < 2 ||
+            playPhase !== 'placement' ||
+            (playPhase === 'placement' && !currentPawnOrder.length)
+          }
           className="flex items-center gap-2"
         >
           <SkipForward className="w-4 h-4" />
@@ -146,7 +170,12 @@ function ControlePanel() {
 
         <Button
           onClick={handleDrawDominos}
-          disabled={playPhase !== 'placement'}
+          // TODO: disabled
+          disabled={
+            players.length < 2 ||
+            playPhase !== 'placement' ||
+            (playPhase === 'placement' && !currentPawnOrder.length)
+          }
           className="flex items-center gap-2"
         >
           <Dices className="w-4 h-4" />

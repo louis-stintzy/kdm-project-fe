@@ -26,6 +26,7 @@ export interface DominoActions {
   initDominos: () => void
   drawDominos: (turn: number) => void
   discardDomino: (turn: number, playersNumber: number) => void
+  togglePhase: () => void
   removeFromCurrent: (domino: Domino) => void
   advanceTurn: () => void
   resetDominoState: () => void
@@ -129,6 +130,12 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
         playPhase: state.turn === 1 ? 'draft' : 'placement',
       }
     })
+  },
+
+  togglePhase: () => {
+    set((state) => ({
+      playPhase: state.playPhase === 'draft' ? 'placement' : 'draft',
+    }))
   },
 
   removeFromCurrent: (domino) => {

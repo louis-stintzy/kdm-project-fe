@@ -11,11 +11,11 @@ import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 
 function PlayerTurnCard() {
-  const { turn, playPhase } = useDomino()
-  const { pawns, currentPlayer } = usePlayer()
+  const { turn, playPhase, currentDominos } = useDomino()
+  const { pawns, currentPlayer, placePawn } = usePlayer()
   const playerName = currentPlayer ? currentPlayer.name : 'No Player'
   const currentPawn = pawns.find((pawn) => pawn.currentPawn === true)
-  const pawnColor = currentPawn ? currentPawn.color.hex : '#ccc'
+  const pawnColor = currentPawn ? currentPawn.color.hex : '#cccccc'
 
   const getMessage = (requestConfirmation: boolean) => {
     if (playPhase === 'draft') {
@@ -35,33 +35,25 @@ function PlayerTurnCard() {
     if (playPhase === 'draft') {
       // Logique pour confirmer la sélection du domino
       console.log('Confirming draft phase action')
+      if (turn === 1 && currentPawn?.selectedDomino?.domino) {
+        const selectedDomino = currentPawn.selectedDomino.domino
+        const selectedDominoPosition = currentDominos.findIndex(
+          (domino) => domino.id === selectedDomino.id,
+        )
+        placePawn(currentPawn.id, 'currentDominos', selectedDominoPosition)
+      }
     } else if (playPhase === 'placement') {
       // Logique pour confirmer le placement du domino
       console.log('Confirming placement phase action')
     }
   }
 
-  //   const canConfirm = () => {
-  //     if (!currentPlayer) return false
-  //     if (playPhase === 'draft') {
-  //       // Vérifier si un pion est sélectionné/déplaçable
-  //       return pawns.some(
-  //         (pawn) => pawn.isDraggable && pawn.playerId === currentPlayer.id,
-  //       )
-  //     }
-  //     if (playPhase === 'placement') {
-  //       // Logique pour vérifier si un domino est placé (à adapter selon votre logique)
-  //       return true // À adapter selon votre implémentation
-  //     }
-  //     return false
-  //   }
-
   return (
     <Card
       className="w-full max-w-lg mx-auto shadow-lg border-2 transition-all duration-200"
       style={{
         borderColor: pawnColor,
-        backgroundColor: `${pawnColor}10`, // couleur de fond très légère
+        backgroundColor: `${pawnColor}10`,
       }}
     >
       <CardHeader className="pb-3">
@@ -87,12 +79,12 @@ function PlayerTurnCard() {
             {getMessage(true)}
             <Button
               onClick={handleConfirmAction}
-              variant={'ghost'}
-              //   disabled={!canConfirm()}
-              className="flex items-center gap-2 hover:cursor-pointer"
-              //   size={'sm'}
+              variant={'secondary'}
+              className="flex items-center gap-2 rounded-full hover:cursor-pointer hover:border-1 hover:border-white"
+              size={'sm'}
               style={{
                 color: pawnColor,
+                borderColor: `${pawnColor}75`,
               }}
             >
               <Check className="w-4 h-4" />

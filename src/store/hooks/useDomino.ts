@@ -10,6 +10,7 @@ export const useDomino = () => {
   const initDominos = useGameStore((state) => state.initDominos)
   const drawDominos = useGameStore((state) => state.drawDominos)
   const discardDomino = useGameStore((state) => state.discardDomino)
+  const togglePhase = useGameStore((state) => state.togglePhase)
   const removeFromCurrent = useGameStore((state) => state.removeFromCurrent)
   const advanceTurn = useGameStore((state) => state.advanceTurn)
   const resetDominoState = useGameStore((state) => state.resetDominoState)
@@ -24,6 +25,7 @@ export const useDomino = () => {
     initDominos,
     drawDominos,
     discardDomino,
+    togglePhase,
     removeFromCurrent,
     advanceTurn,
     resetDominoState,
