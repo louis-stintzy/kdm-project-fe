@@ -62,8 +62,9 @@ export interface PlayerActions {
   placePawn: (
     pawnId: PawnId,
     dominoList: 'currentDominos' | 'nextDominos',
-    listPosition: keyof PlayerState['currentPawnOrder'],
+    listPosition: number,
   ) => void
+  dominoCanTakePosition: () => void
   resetPlayerState: () => void
 }
 export interface PlayerSlice extends PlayerState, PlayerActions {}
@@ -197,10 +198,14 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
           : state.nextPawnOrder
       const pawnOrderList2 =
         dominoList === 'currentDominos' ? 'currentPawnOrder' : 'nextPawnOrder'
-      const updatedList = {
-        ...targetList,
-        [listPosition]: pawnId,
+      if (targetList[listPosition] !== null) {
+        console.error(
+          `Position ${listPosition} in ${dominoList} is already occupied by pawn ${targetList[listPosition]}`,
+        )
+        return state
       }
+      const updatedList = [...targetList]
+      updatedList[listPosition] = pawnId
       const targetPawn = state.pawns.find((pawn) => pawn.id === pawnId)
       if (!targetPawn) {
         console.error('Pawn not found:', pawnId)
@@ -219,9 +224,7 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
             dominoList === 'currentDominos'
               ? STARTING_X_POSITION_CURRENT_DOMINOS + CELL_SIZE
               : STARTING_X_POSITION_NEXT_DOMINOS + CELL_SIZE,
-          y: Math.ceil(
-            CELL_SIZE / 2 + DOMINO_SPACING * (listPosition as number),
-          ),
+          y: Math.ceil(CELL_SIZE / 2 + DOMINO_SPACING * listPosition),
         },
       }
       const targetPawnOrder =
@@ -276,6 +279,37 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set) => ({
         [pawnOrderList1]: updatedPawnOrder,
         [pawnOrderList2]: updatedList,
         currentPlayer: nextTargetPlayer,
+      }
+    }),
+  // TODO: Déplacer dans la nouvelle slice sharedSlice
+  dominoCanTakePosition: () =>
+    set((state) => {
+      const targetPawnId = state.currentPawnOrder[0]
+      const targetPawn = state.pawns.find((pawn) => pawn.id === targetPawnId)
+      if (!targetPawn) {
+        console.error('Pawn not found:', targetPawnId)
+        return state
+      }
+      const updatedPawn = {
+        ...targetPawn,
+        currentPawn: true,
+      }
+      const targetPlayer = state.players.find(
+        (player) => player.id === targetPawn.playerId,
+      )
+      if (!targetPlayer) {
+        console.error('Player not found for pawn:', targetPawnId)
+        return state
+      }
+      const updatedPawnOrder = state.currentPawnOrder.filter(
+        (id) => id !== targetPawnId,
+      )
+      return {
+        currentPawnOrder: updatedPawnOrder,
+        currentPlayer: targetPlayer,
+        pawns: state.pawns.map((pawn) =>
+          pawn.id === targetPawnId ? updatedPawn : pawn,
+        ),
       }
     }),
   resetPlayerState: () => set(() => initialPlayerState),

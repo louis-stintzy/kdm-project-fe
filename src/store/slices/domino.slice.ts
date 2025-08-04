@@ -24,8 +24,8 @@ export interface DominoState {
 
 export interface DominoActions {
   initDominos: () => void
-  drawDominos: (turn: number) => void
-  discardDomino: (turn: number, playersNumber: number) => void
+  drawDominos: () => void
+  discardDomino: (playersNumber: number) => void
   togglePhase: () => void
   removeFromCurrent: (domino: Domino) => void
   advanceTurn: () => void
@@ -78,14 +78,20 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
     })
   },
 
-  drawDominos: (turn) => {
+  drawDominos: () => {
     set((state) => {
+      const turn = state.turn
+      if (turn > MAX_TURNS) {
+        console.error('Maximum number of turns reached')
+        return state
+      }
+      const playPhase = state.playPhase
       const drawnDominos = drawAndSortDominos(state.stackDominos)
       const updatedDrawnDominos = drawnDominos.map((domino, index) => ({
         ...domino,
         position: {
           x:
-            turn === 1
+            turn === 1 && playPhase === null
               ? STARTING_X_POSITION_CURRENT_DOMINOS
               : STARTING_X_POSITION_NEXT_DOMINOS,
           y: index * DOMINO_SPACING,
@@ -94,21 +100,28 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
       const updatedStack = state.stackDominos.slice(NUMBER_OF_DRAWNS)
       return {
         stackDominos: updatedStack,
-        currentDominos: turn === 1 ? updatedDrawnDominos : state.currentDominos,
-        nextDominos: turn === 1 ? [] : updatedDrawnDominos,
+        currentDominos:
+          turn === 1 && playPhase === null
+            ? updatedDrawnDominos
+            : state.currentDominos,
+        nextDominos:
+          turn === 1 && playPhase === null ? [] : updatedDrawnDominos,
       }
     })
   },
 
-  discardDomino: (turn, playersNumber) => {
+  discardDomino: (playersNumber) => {
     set((state) => {
       if (playersNumber !== 2 && playersNumber !== 4) {
         console.error('Invalid number of players for discard action')
         return state
       }
-
+      const turn = state.turn
+      const currentPlayPhase = state.playPhase
       const targetDominos =
-        turn === 1 ? state.currentDominos : state.nextDominos
+        turn === 1 && currentPlayPhase === null
+          ? state.currentDominos
+          : state.nextDominos
       const discardedDomino = targetDominos[MIDDLE_INDEX]
       const remainingDominos = targetDominos
         .filter((_, i) => i !== MIDDLE_INDEX)
@@ -116,7 +129,7 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
           ...domino,
           position: {
             x:
-              turn === 1
+              turn === 1 && currentPlayPhase === null
                 ? STARTING_X_POSITION_CURRENT_DOMINOS
                 : STARTING_X_POSITION_NEXT_DOMINOS,
             y: index * DOMINO_SPACING,
@@ -125,9 +138,14 @@ export const createDominoSlice: StateCreator<DominoSlice> = (set) => ({
 
       return {
         discardedDominos: [...state.discardedDominos, discardedDomino],
-        currentDominos: turn === 1 ? remainingDominos : state.currentDominos,
-        nextDominos: turn === 1 ? [] : remainingDominos,
-        playPhase: state.turn === 1 ? 'draft' : 'placement',
+        currentDominos:
+          turn === 1 && currentPlayPhase === null
+            ? remainingDominos
+            : state.currentDominos,
+        nextDominos:
+          turn === 1 && currentPlayPhase === null ? [] : remainingDominos,
+        playPhase:
+          turn === 1 && currentPlayPhase === null ? 'draft' : currentPlayPhase,
       }
     })
   },

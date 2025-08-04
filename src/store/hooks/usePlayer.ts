@@ -22,6 +22,9 @@ export const usePlayer = () => {
     (state) => state.pawnTakesPositionOnDomino,
   )
   const placePawn = useGameStore((state) => state.placePawn)
+  const dominoCanTakePosition = useGameStore(
+    (state) => state.dominoCanTakePosition,
+  )
   const resetPlayerState = useGameStore((state) => state.resetPlayerState)
 
   return {
@@ -44,6 +47,7 @@ export const usePlayer = () => {
     updatePawnPosition,
     pawnTakesPositionOnDomino,
     placePawn,
+    dominoCanTakePosition,
     resetPlayerState,
   }
 }

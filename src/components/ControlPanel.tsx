@@ -21,6 +21,7 @@ function ControlePanel() {
     toggleDialog,
     shufflePawns,
     pawnCanTakePosition,
+    dominoCanTakePosition,
     resetPlayerState,
   } = usePlayer()
   const {
@@ -47,11 +48,11 @@ function ControlePanel() {
 
   const handleInitAndDraw = () => {
     initDominos()
-    drawDominos(1)
+    drawDominos()
   }
 
   const handleDiscardMiddle = () => {
-    discardDomino(turn, 2) // 2 joueurs
+    discardDomino(2) // 2 joueurs
   }
 
   const handleSelectDomino = () => {
@@ -68,6 +69,7 @@ function ControlePanel() {
 
   const handlePlaceDomino = () => {
     togglePhase()
+    dominoCanTakePosition()
   }
 
   const handleAdvanceTurn = () => {
@@ -75,7 +77,7 @@ function ControlePanel() {
   }
 
   const handleDrawDominos = () => {
-    drawDominos(turn)
+    drawDominos()
   }
 
   const handleReset = () => {
@@ -85,102 +87,108 @@ function ControlePanel() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div className="flex flex-wrap gap-2">
-        <Button
-          onClick={handleNewGame}
-          disabled={players.length > 1}
-          className="flex items-center gap-2"
-        >
-          <UsersRound className="w-4 h-4" />
-          Nouvelle Partie
-        </Button>
-        <Button
-          onClick={handleShufflePawns}
-          disabled={
-            turn !== 0 || players.length < 2 || shuffledPawnOrder.length !== 0
-          }
-          className="flex items-center gap-2"
-        >
-          <Dices className="w-4 h-4" />
-          Mélanger les pions
-        </Button>
-        <Button
-          onClick={handleInitAndDraw}
-          disabled={
-            turn !== 0 || players.length < 2 || !shuffledPawnOrder.length
-          }
-          className="flex items-center gap-2"
-        >
-          <Play className="w-4 h-4" />
-          Initialiser & Tirer
-        </Button>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={handleNewGame}
+            disabled={players.length > 1}
+            className="flex items-center gap-2"
+          >
+            <UsersRound className="w-4 h-4" />
+            Nouvelle Partie
+          </Button>
+          <Button
+            onClick={handleShufflePawns}
+            disabled={
+              turn !== 0 || players.length < 2 || shuffledPawnOrder.length !== 0
+            }
+            className="flex items-center gap-2"
+          >
+            <Dices className="w-4 h-4" />
+            Mélanger les pions
+          </Button>
+          <Button
+            onClick={handleInitAndDraw}
+            disabled={
+              turn !== 0 || players.length < 2 || !shuffledPawnOrder.length
+            }
+            className="flex items-center gap-2"
+          >
+            <Play className="w-4 h-4" />
+            Initialiser & Tirer
+          </Button>
 
-        <Button
-          onClick={handleDiscardMiddle}
-          variant="destructive"
-          disabled={
-            turn === 1 ? currentDominos.length !== 5 : nextDominos.length !== 5
-          }
-          className="flex items-center gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          Éliminer le milieu
-        </Button>
+          <Button
+            onClick={handleDiscardMiddle}
+            variant="destructive"
+            disabled={
+              turn === 1 && playPhase === null
+                ? currentDominos.length !== 5
+                : nextDominos.length !== 5
+            }
+            className="flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Éliminer le milieu
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={handleSelectDomino}
+            disabled={
+              players.length < 2 ||
+              playPhase !== 'draft' ||
+              pawns.some((pawn) => pawn.isDraggable) ||
+              !shuffledPawnOrder.length
+            }
+            className="flex items-center gap-2"
+          >
+            <Hand className="w-4 h-4" />
+            Choisir les dominos
+          </Button>
+          <Button
+            onClick={handleDrawDominos}
+            disabled={
+              players.length < 2 ||
+              playPhase !== 'draft' ||
+              pawns.some((pawn) => pawn.isDraggable) ||
+              shuffledPawnOrder.length !== 0 ||
+              nextDominos.length !== 0
+            }
+            className="flex items-center gap-2"
+          >
+            <Dices className="w-4 h-4" />
+            Tirer
+          </Button>
+          <Button
+            onClick={handlePlaceDomino}
+            disabled={
+              players.length < 2 ||
+              (playPhase === 'placement' && currentPawnOrder.length === 0) ||
+              pawns.some((pawn) => pawn.isDraggable) ||
+              shuffledPawnOrder.length !== 0 ||
+              nextDominos.length === 0 ||
+              nextDominos.length === 5
+            }
+            className="flex items-center gap-2"
+          >
+            <LandPlot className="w-4 h-4" />
+            Placer
+          </Button>
 
-        <Button
-          onClick={handleSelectDomino}
-          disabled={
-            players.length < 2 ||
-            playPhase !== 'draft' ||
-            pawns.some((pawn) => pawn.isDraggable) ||
-            !shuffledPawnOrder.length
-          }
-          className="flex items-center gap-2"
-        >
-          <Hand className="w-4 h-4" />
-          Choisir les dominos
-        </Button>
-
-        <Button
-          onClick={handlePlaceDomino}
-          disabled={
-            players.length < 2 ||
-            playPhase === 'placement' ||
-            pawns.some((pawn) => pawn.isDraggable) ||
-            shuffledPawnOrder.length !== 0
-          }
-          className="flex items-center gap-2"
-        >
-          <LandPlot className="w-4 h-4" />
-          Placer
-        </Button>
-
-        <Button
-          onClick={handleAdvanceTurn}
-          disabled={
-            players.length < 2 ||
-            playPhase !== 'placement' ||
-            (playPhase === 'placement' && !currentPawnOrder.length)
-          }
-          className="flex items-center gap-2"
-        >
-          <SkipForward className="w-4 h-4" />
-          Tour suivant
-        </Button>
-
-        <Button
-          onClick={handleDrawDominos}
-          // TODO: disabled
-          disabled={
-            players.length < 2 ||
-            playPhase !== 'placement' ||
-            (playPhase === 'placement' && !currentPawnOrder.length)
-          }
-          className="flex items-center gap-2"
-        >
-          <Dices className="w-4 h-4" />
-          Tirer
-        </Button>
+          <Button
+            onClick={handleAdvanceTurn}
+            disabled={
+              players.length < 2 ||
+              playPhase !== 'placement' ||
+              (playPhase === 'placement' && !currentPawnOrder.length)
+            }
+            className="flex items-center gap-2"
+          >
+            <SkipForward className="w-4 h-4" />
+            Tour suivant
+          </Button>
+        </div>
 
         <Button
           onClick={handleReset}
